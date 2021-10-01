@@ -1,1 +1,1 @@
-[TEXT TO SHOW](https://youtu.be/uYuEOwOVQUk)
+[Vlog Youtube Link](https://youtu.be/uYuEOwOVQUk)
