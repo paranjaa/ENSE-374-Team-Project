@@ -1,1 +1,1 @@
-[Vlog Youtube Link](https://www.youtube.com/watch?v=gjdqgKdcavM)
+[Vlog Youtube Link](https://youtu.be/7eaw3SWly_k)
