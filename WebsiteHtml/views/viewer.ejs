@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Note File Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+</body>
+
+<div class="container">
+    <div class="text-center">
+        <h1>ShareNote V1</h1>
+      <div class="row">
+          <div class="col align-self-start">
+            
+          </div>
+
+            <div class="col align-self-center">
+                <br>
+                <br>
+                
+                <br>
+                <br>
+
+                <div class="row justify-content-center" style="background-color: white;">
+                    <div class ="shadow-lg">
+                        <br>
+                        <form action="/logout" method="GET">
+                            <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseLogout" role="button" aria-expanded="false" aria-controls="collapseLogout">
+                                <p>Logged In as <%= username %>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                                </svg>
+                                </p>
+                            </a>
+                            <div class="collapse" id="collapseLogout">
+                                <br>
+                                <input class="w-10 btn btn-lg btn-primary" type="submit" value="Log Out">
+                                <br>
+                                <br>
+                            </div>
+                        </form>
+        
+                    </div>
+                </div>
+               
+                
+                <div class="row justify-content-center" style="background-color: #f0f5f9;">
+                    <div class ="shadow-lg">
+                        
+                        <br>
+                        <br>
+                        <div class ="taskList">
+                            <% for(let i = 0; i < tasks.array.length;i++){ %> 
+                                <% if(tasks.array[i].state === "Unclaimed") {%>
+                                    <form action="/claim" method="POST">
+                                        <div class="input-group mb-3">
+                                            <input type="hidden" id="claimUsername" name="username" value="<%= username %>"/>
+                                            <input type="hidden" id="claimID" name="id" value="<%= tasks.array[i]._id %>"/>
+                                            <input type="text" class="form-control" disabled placeholder= "<%= tasks.array[i].text %>" aria-describedby="button-addon2">
+                                            <input type="text" class="form-control" disabled placeholder= "<%= tasks.array[i].creator %>" aria-describedby="button-addon2">
+                                            <button type="submit" class="btn btn-outline-secondary" type="button" name="claimButton">Open? </button>
+                                        </div> 
+                                    </form>
+
+                                <% } %>
+
+
+                                <% if(tasks.array[i].state === "Claimed" && tasks.array[i].claimingUser === username ) {%>
+                                    <form action="/abandonorcomplete" method="POST">
+                                        <div class="input-group mb-3">
+                                            <input type="hidden" id="abandonOrCompleteUsername" name="username" value="<%= username %>"/>
+                                            <input type="hidden" id="abandonOrCompleteId" name="id" value="<%= tasks.array[i]._id %>"/>
+                                            <input type="text" class="form-control" disabled placeholder="<%= tasks.array[i].text %>">
+                                            <button type = "submit" class="btn btn-outline-secondary" type="button" id="button-addon2" name="abandonButton"> Edit? </button>
+                                        </div>
+                                    </form>
+                                <% } %>
+
+
+                                <% if(tasks.array[i].state === "Finished" && tasks.array[i].claimingUser === username && tasks.array[i].isTaskCleared === false) {%>
+                                    <form action="/unfinish" method="POST">
+                                        <div class="input-group mb-3">
+                                            <input type="hidden" id="claimUsername" name="username" value="<%= username %>"/>
+                                            <input type="hidden" id="claimID" name="id" value="<%= tasks.array[i]._id %>"/>
+                                            <input type="text" class="form-control struckThrough" disabled placeholder="<%= tasks.array[i].text %>">
+                                        </div>
+                                    
+                                    </form>
+                                    
+                                <% } %>
+
+                                <% if(tasks.array[i].state === "Claimed" && tasks.array[i].claimingUser !== username ) {%>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" disabled placeholder="<%= tasks.array[i].text %>">
+                                        <button type = "submit" class="btn btn-outline-secondary" type="button" id="button-addon2" name="abandonButton"> Different Author </button>
+                                    </div>
+                                <% } %>
+
+                                <% if(tasks.array[i].state === "Finished" && tasks.array[i].claimingUser !== username && tasks.array[i].isTaskCleared === false) {%>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control struckThrough" disabled placeholder="<%= tasks.array[i].text %>">
+                                        <button type = "submit" class="btn btn-outline-secondary" type="button" id="button-addon2" name="abandonButton"> Different Author </button>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        </div>
+
+
+                        <form action="/addtask" method="POST">
+                            <div class="input-group mb-3">
+                                <input type="hidden" name="username" value="<%= username %>"/>
+                                <input type="text" name = "newTaskText" class="form-control" id="textBox" placeholder="Enter a new folder here">
+                                <button class="btn btn-outline-secondary" id = "addButton" >Add</button>
+                            </div>
+                        </form>
+
+                        <form action="/addtask" method="POST">
+                            <div class="input-group mb-3">
+                                <input type="hidden" name="username" value="<%= username %>"/>
+                                <input type="text" name = "newTaskText" class="form-control" id="textBox" placeholder="Enter a new note name here">
+                                <button class="btn btn-outline-secondary" id = "addButton" >Add</button>
+                            </div>
+                        </form>
+
+                        <form action="/newNote" method="POST">
+                            <div class="input-group mb-3">
+                                <input type="hidden" name="username" value="<%= username %>"/>
+                                <input type="text" name = "newTaskText" class="form-control" id="textBox" placeholder="Enter a new note name here">
+                                <button class="btn btn-outline-secondary" id = "addButton" >Add</button>
+                            </div>
+                        </form>
+
+                        <form action="/editor" method="pos">
+                            <input type="hidden" id="claimUsername" name="username" value="<%= username %>"/>
+                            <input class="w-10 btn btn-lg btn-primary" type="submit" value="Create New Note">
+                        </form>
+
+
+                        <br>
+                        <br>
+
+                           
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+            </div>
+
+            <div class="col align-self-end">
+            </div>
+
+        </div>  
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</html>
+
