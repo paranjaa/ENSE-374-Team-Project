@@ -2,10 +2,13 @@ const fs = require("fs");
 
 
 
-const express = require ("express");
-const app = express(); 
-app.use(express.static(__dirname+'/public'));
-app.set("view engine", "ejs");
+
+
+var folders;
+
+var notes;
+
+var users;
 
 /*
 let rawUsers = fs.readFileSync('users.json');
@@ -15,14 +18,24 @@ let rawTasks = fs.readFileSync('tasks.json');
 let fomattedTasks = JSON.parse(rawTasks);
 */
 
-let usersReference = require('./users.json');
-const { raw } = require("body-parser");
+// let usersReference = require('./users.json');
+// const { raw } = require("body-parser");
 
+
+
+
+
+const express = require ("express");
+const app = express(); 
+app.use(express.static(__dirname+'/public'));
+app.set("view engine", "ejs");
+
+app.use(express.static("public"));
+
+app.use(express.urlencoded({ extended: true}));
 
 // a common localhost test port
 const port = 3000; 
-
-app.use(express.urlencoded({ extended: true}));
 
 
 // Simple server operation
@@ -36,19 +49,24 @@ app.get("/", (req, res) =>{
   console.log("A user requested the root route");
 } );  
 
-app.post("/viewer", (req, res) =>{
+app.post("/mainViewer", (req, res) =>{
   console.log(req.body);
-  res.render("viewer", {username: req.body.username, users:users, tasks:tasks});
-  console.log("A user requested the file viwer route");
+  res.render("mainView", {username: req.body.username, users:users, folders:folders, notes:notes});
+  console.log("A user requested the main viewer route");
+} );  
+
+app.post("/folderViewer", (req, res) =>{
+  console.log(req.body);
+  res.render("folderView", {username:req.body.username, location:req.body.folderName, users:users, folders:folders, notes:notes});
+  console.log("A user requested the folder viwer route");
 } );  
 
 
-app.post("/editor", (req, res) =>{
+app.post("/noteEditor", (req, res) =>{
   console.log(req.body);
-  res.render("editor", {username: req.body.username});
-  console.log("A user requested the file viwer route");
-} );  
-
+  res.render("noteEditor", {username:req.body.username, location:req.body.location, noteName:req.body.noteName, users:users, folders:folders, notes:notes});
+  console.log("A user requested the note editor route");
+} );
 
 
 app.post("/login", (req, res) => {
@@ -81,7 +99,7 @@ app.post("/login", (req, res) => {
   if(valid === true)
   {
     console.log("Logged in with valid info, loading the viewer list");
-    res.redirect(307,"/viewer"); //and send the user to the list
+    res.redirect(307,"/mainViewer"); //and send the user to the list
   }
 
   //if not, print a different message and reload the current page
@@ -154,13 +172,117 @@ app.post("/register", (req, res) => {
 
 app.post("/newNote",(req,res)=>{
   console.log("A user hit the new note button");
-  res.redirect(307,"/editor");
+  let rawdata = fs.readFileSync('notes.json');
+  let notes = JSON.parse(rawdata);
+  let dataRecieved = req.body;
+  console.log(dataRecieved);
+
+  
+
+  newID = notes.array.length;
+  let newNote = 
+  {
+    _id: newID,
+    title: dataRecieved.newNoteName,
+    location: dataRecieved.location,
+    content: "Empty For Now",
+    creator: dataRecieved.username 
+  }
+  notes.array.push(newNote)
+
+  fs.writeFileSync ( __dirname + "/notes.json", JSON.stringify( notes ), "utf8", 
+  ( err ) => {
+  if ( err )
+  {
+    console.log( err );
+    return;
+  }
+  });
+
+  //this needs to go back to folderviewer, but it doesn't pass the variables right yet
+  res.redirect(307,"/mainViewer");
+});
+
+app.post("/newFolder",(req,res)=>{
+  console.log("A user hit the new Folder button");
+  //readAll();
+
+  let rawdata = fs.readFileSync('folders.json');
+  let folders = JSON.parse(rawdata);
+
+
+  let dataRecieved = req.body;
+  console.log(dataRecieved);
+
+  newID = folders.array.length;
+  let newFolder = 
+  {
+    _id: newID,
+    name: dataRecieved.newFolderName,
+    creator: dataRecieved.username 
+  }
+
+  folders.array.push(newFolder);
+
+  fs.writeFileSync ( __dirname + "/folders.json", JSON.stringify( folders ), "utf8", 
+  ( err ) => {
+  if ( err )
+  {
+    console.log( err );
+    return;
+  }
+  });
+
+
+  //saveAll();
+  res.redirect(307,"/mainViewer");
 });
 
 
+
+app.post("/saveNote",(req,res)=>{
+  console.log("A user hit the button for saving a note");
+
+  let dataRecieved = req.body;
+
+  console.log(dataRecieved);
+
+  let rawdata = fs.readFileSync('notes.json');
+  let notes = JSON.parse(rawdata);
+
+  for(i = 0; i< notes.array.length; i++)
+  {
+    // console.log(i);
+    // console.log(tasks.array[i]._id);
+    // console.log(dataRecieved.id);
+    if(notes.array[i]._id === dataRecieved.id)
+    {
+        notes.array[i].content = dataRecieved.noteContent;
+    }
+  }
+
+  fs.writeFileSync ( __dirname + "/notes.json", JSON.stringify( notes ), "utf8", 
+  ( err ) => {
+  if ( err )
+  {
+    console.log( err );
+    return;
+  }
+  });
+
+
+  
+  res.redirect(307,"/mainViewer");
+});
+
+
+
+
+
+
 app.post("/returnViewer",(req,res)=>{
-  console.log("A user hit the button for returning to the file viewer");
-  res.redirect(307,"/viewer");
+  console.log("A user hit the button for returning to the main page");
+  res.redirect(307,"/mainViewer");
 });
 
 
@@ -353,10 +475,31 @@ function saveAll()
       console.log( err );
       return;
     }
+    
   });
   
   fs.writeFileSync ( __dirname + "/users.json", 
                   JSON.stringify( users ), 
+                  "utf8", 
+                  ( err ) => {
+  if ( err ) {
+      console.log( err );
+      return;
+  }
+  });
+
+  fs.writeFileSync ( __dirname + "/folders.json", 
+                  JSON.stringify( folders ), 
+                  "utf8", 
+                  ( err ) => {
+  if ( err ) {
+      console.log( err );
+      return;
+  }
+  });
+
+  fs.writeFileSync ( __dirname + "/notes.json", 
+                  JSON.stringify( notes ), 
                   "utf8", 
                   ( err ) => {
   if ( err ) {
@@ -374,6 +517,15 @@ function readAll()
   rawdata = fs.readFileSync('users.json');
   users = JSON.parse(rawdata);
   console.log(users);
+
+
+  rawdata = fs.readFileSync('folders.json');
+  folders = JSON.parse(rawdata);
+  console.log(folders);
+
+  rawdata = fs.readFileSync('notes.json');
+  notes = JSON.parse(rawdata);
+  console.log(notes);
 }
 
 readAll();
@@ -383,5 +535,4 @@ readAll();
 
 
 
-app.use(express.static("public"))
 
