@@ -1,0 +1,30 @@
+Users
+    +user_id
+    email
+    username
+    password
+
+
+
+Folders
+
+    *user_id
+    path        ---> basename(path)
+
+
+Files
+
+    *user_id
+    path        ---> basename(path)
+
+
+
+- query the database to get a list of all folders
+- use php script the fetch the name of all Folders
+- php script --> use loop to echo the folders in html
+
+
+
+move_uploaded_files()    // changes path of image(any file) from tmppath to a given folder that you specify
+store path in the database
+display image --> use script to display image <a href=" .$path.">

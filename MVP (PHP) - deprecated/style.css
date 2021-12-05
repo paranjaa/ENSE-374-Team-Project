@@ -1,0 +1,113 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+    /* grid-template-rows: auto auto auto; */
+}
+
+.ShareNoteHeader {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    text-align: center;
+}
+
+  
+.navBar {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    text-align: center;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+.fileViewer {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+.filepathBar {
+    margin-top: 80px;
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    text-align: center;
+}
+
+.actionButtonsBar {
+    margin-bottom: 20px;
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    /* text-align: center; */
+}
+
+.contentDisplay {
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    text-align: center;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+.createNote {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 4;
+    grid-row-end: 5;
+
+    text-align: center;
+}
+
+.previous-folder {
+    margin: 5px;
+}
+
+.previous-folder-logo {
+    max-height: 35px;
+}
+
+.folder {
+    margin: 5px;
+}
+
+.folder-logo {
+    max-height: 35px;
+}
+
+.file {
+    margin: 5px;
+}
+
+.file-logo {
+    max-height: 35px;
+}
+
+.fileEditor {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
+textarea {
+    width: 100%;
+    /* height: 100%;  */
+    /* box-sizing: border-box; */
+}

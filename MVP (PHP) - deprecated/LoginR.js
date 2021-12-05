@@ -1,0 +1,1 @@
+document.getElementById("formLogin").addEventListener("submit", ValidLogin, false);
